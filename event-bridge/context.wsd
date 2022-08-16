@@ -1,0 +1,20 @@
+@startuml C4_Context
+!include ./C4-PlantUML/C4_Context.puml
+
+title Diagrama de Contexto - Event Bridge
+
+Person(user, "Usuário")
+System(foo, "Aplicação Foo")
+System(bar, "Aplicação Bar")
+System_Ext(aws, "Aws Cloud")
+
+Rel(user, foo, "Utiliza aplicação")
+Rel(foo, user, "Envia retorno")
+Rel(foo, aws, "Emite eventos AWS")
+Rel(foo, aws, "Consome Eventos AWS")
+Rel(bar, aws, "Emite eventos AWS")
+Rel(bar, aws, "Consome Eventos AWS")
+
+SHOW_LEGEND()
+
+@enduml

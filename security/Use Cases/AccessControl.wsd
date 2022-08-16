@@ -1,0 +1,43 @@
+@startuml AccessControl
+actor User << Human >>
+    usecase RequestAccessToken
+    usecase RecoverCredentials
+        usecase ForgotCredentialsPassword
+        RecoverCredentials -.> ForgotCredentialsPassword: Extend
+            usecase SendRecoverCredentialsToken
+            ForgotCredentialsPassword -.> SendRecoverCredentialsToken: Include
+                usecase SendAsEmail
+                usecase SendAsSms
+                SendRecoverCredentialsToken -.> SendAsEmail: Extend
+                SendRecoverCredentialsToken -.> SendAsSms: Extend
+        usecase ChangeCredentialsPassword
+        RecoverCredentials -.> ChangeCredentialsPassword: Extend
+        usecase CheckRecoverCredentialsToken
+        ChangeCredentialsPassword -.> CheckRecoverCredentialsToken: Include
+    User -left-> RequestAccessToken: With Username and Password
+    User -> RecoverCredentials
+actor AuthenticatedUser
+    AuthenticatedUser <|-up- User: With access token
+    usecase AccessProtectedResource
+        usecase ValidateAuthentication
+        usecase ValidateAuthorization
+        usecase ValidateAccess
+            ValidateAccess -.> ValidateAuthentication: Include
+            ValidateAccess -.> ValidateAuthorization: Extend
+        usecase ApplyAccessContext
+        usecase RouteToHandler
+        AuthenticatedUser -> AccessProtectedResource
+        AccessProtectedResource -.> ValidateAccess: Include
+        AccessProtectedResource -.> RouteToHandler: Include
+        AccessProtectedResource -.> ApplyAccessContext: Extend
+actor Client << Application >>
+    Client <|- AuthenticatedUser: With Access Token
+    usecase ExchangeCodeForToken
+    usecase RequestAuthorizeCode
+    RequestAuthorizeCode -- User: (When Login on Client)
+    Client -> RequestAccessToken: With Client Credentials
+    Client -> ExchangeCodeForToken: (With User\nAuthorization Code)
+    ExchangeCodeForToken -right.> RequestAuthorizeCode: Include
+    ExchangeCodeForToken -.> RequestAccessToken: Extend
+@enduml
+

@@ -1,0 +1,18 @@
+@startuml RequestAccessToken
+autonumber
+actor User as user << Human >>
+participant AuthenticationAPI as api << Restfull Api >>
+    user -> api: DoRequest(payload)
+    activate api
+    api -> api: ValidateRequest(request)
+    break isInvalid
+        api --> user: ReturnWithErrors(BadRequest)
+    end
+    api -> api: ExtractCredentials(request.payload)
+    api -> api: ValidateCredentials(credentials)
+    break isInvalid
+        api --> user: ReturnWithErrors(Unauthorized)
+    end
+    api -> api: GenerateAccessToken(credentials)
+    return accessToken
+@enduml

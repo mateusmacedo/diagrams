@@ -1,0 +1,76 @@
+@startuml ExchangeCodeForToken
+autonumber
+actor Client as client << Web Application >>
+actor User as user << Human >>
+participant AuthenticationSPA as spa << Single Page Application >>
+participant AuthenticationAPI as api << Restfull Api Application >>
+user -> client: Proceed to login
+    activate client
+        client -> spa: Redict to login page
+    deactivate client
+    activate spa
+        spa -> user: Show Login Form
+    deactivate spa
+    activate user
+        user -> user: Input Credentials(credentials)
+        user -> spa: Call To Action
+    deactivate user
+    activate spa
+        spa -> spa: ValidateInput
+        break isInvalid
+            spa --> user: ShowError(InputError)
+        end
+        spa -> spa: CreatePayload(input)
+        spa -> api: DoRequest(payload)
+    deactivate spa
+    activate api
+        api -> api: ValidateRequest(request)
+        break isInvalid
+            api --> spa: ReturnWithErrors(BadRequest)
+            activate spa
+                spa --> user: ShowError(BadRequest)
+            deactivate spa
+        end
+        api -> api: ValidateCredentials(request.payload.credentials)
+        break isInvalid
+            api --> spa: ReturnWithErrors(Unauthorized)
+            activate spa
+                spa --> user: ShowError(Unauthorized)
+            deactivate spa
+        end
+        api -> api: GenerateAuthorizationCode(request.payload.credentials)
+        api --> spa: ReturnWithCode(code)
+    deactivate api
+    activate spa
+        spa -> user: Show Consent Form(code)
+    deactivate spa
+    activate user
+        user -> spa: Accept Consent
+    deactivate user
+    activate spa
+        spa --> client: RedirectWithCode(code)
+    deactivate spa
+    activate client
+        client -> api: RequestAccessToken(code, clientId, clientSecret)
+    deactivate client
+    activate api
+        api -> api: ValidateRequest(request)
+        break isInvalid
+            api --> client: ReturnWithErrors(BadRequest)
+            activate client
+                client --> user: ShowError(BadRequest)
+            deactivate client
+        end
+        api -> api: ValidateCodeClientIdAndSecret(request)
+        break isInvalid
+            api --> client: ReturnWithErrors(Unauthorized)
+            activate client
+                client --> user: ShowError(Unauthorized)
+            deactivate client
+        end
+        api -> api: GenerateAccessToken(request.payload.code)
+    return ReturnWithAccessToken(token)
+    activate client
+        client -> user: ShowHomePage()
+    deactivate client
+@enduml

@@ -1,0 +1,26 @@
+@startuml C4_Container
+!include ./C4-PlantUML/C4_Container.puml
+
+title Diagrama de Containers - Pub/Sub
+
+System_Boundary(foo, "Aplicação Foo"){
+	Container(fooApi, "API Foo", "NodeJS")
+}
+
+System_Boundary(bar, "Aplicação Bar"){
+	Container(barApi, "API Bar", "NodeJS")
+}
+
+System_Boundary(aws, "Aws Cloud"){
+	ContainerQueue(sns, "Topicos", "SNS")
+	ContainerQueue(sqs, "Filas", "SQS")
+	Rel_U(sqs, sns, "Inscreve-se em")
+}
+
+Rel_R(fooApi, sns, "Publica Mensagem em")
+Rel_L(barApi, sns, "Publica Mensagem em")
+Rel(fooApi, sqs, "Consome Mensagem de")
+Rel(barApi, sqs, "Consome Mensagem de")
+
+SHOW_LEGEND()
+@enduml

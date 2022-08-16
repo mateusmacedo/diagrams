@@ -1,0 +1,17 @@
+@startuml C4_Context
+!include ./C4-PlantUML/C4_Context.puml
+
+title Diagrama de Contexto - Pub/Sub
+
+System(foo, "Aplicação Foo")
+System(bar, "Aplicação Bar")
+System_Ext(aws, "Aws Cloud")
+
+Rel_R(foo, aws, "Produz Mensagem em Topico", "Publisher")
+Rel_R(foo, aws, "Consome Mensagem em Fila", "Subscriber")
+Rel_L(bar, aws, "Produz Mensagem em Topico", "Publisher")
+Rel_L(bar, aws, "Consome Mensagem em Fila", "Subscriber")
+
+SHOW_LEGEND()
+
+@enduml

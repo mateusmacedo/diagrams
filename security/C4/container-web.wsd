@@ -1,0 +1,30 @@
+@startuml LAYOUT_TOP_DOWN C4_Context
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+Person(user, "Usuario", "Usuario da aplicação")
+
+System_Boundary(k8s, "Kubernetes Cluster"){
+	Container_Boundary(auth, "Microserviço Autenticação"){
+		Container(api, "API", "NodeJS")
+	}
+	Container_Boundary(msProtected, "Microserviço Protegido"){
+		Container(pod, "API", "NodeJS")
+	}
+}
+
+System_Boundary(aws, "AWS Cloud"){
+	Container_Boundary(awsCF, "Aws CloudFront"){
+		Container(spa, "Web SPA", "ReactJS")
+	}
+	Container_Boundary(awsCognito, "Aws Cognito"){
+		Container(userPool, "PJ Poll", "User Pool")
+	}
+}
+
+Rel(user, spa, "1. Usuário acessando aplicação")
+Rel(spa, api, "2. Solicita Token de Acesso")
+Rel(spa, pod, "3. Realiza Requisição a API")
+Rel(pod, userPool, "4. Validando Token de Acesso")
+
+SHOW_FLOATING_LEGEND()
+@enduml

@@ -1,0 +1,12 @@
+@startuml C4_Components
+!include ./C4-PlantUML/C4_Component.puml
+	Container_Boundary(fooApi, "API Foo"){
+		Component(service, "Service", "NestJS", "Handles business logic")
+	}
+	Container_Boundary(sns, "Topicos"){
+		Component(topic, "Topico", "AWS SNS", "Recebe mensagens")
+	}
+	Container_Boundary(sqs, "Filas"){
+		Component(queue, "Fila", "AWS SQS", "Enfilera mensagens")
+	}
+@enduml

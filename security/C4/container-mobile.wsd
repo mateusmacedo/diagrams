@@ -1,0 +1,33 @@
+@startuml C4_Context
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+Person(user, "Usuario", "Usuario do App Mobile")
+
+System_Boundary(external, "External Network"){
+	Container(appMobile, "App Mobile", "React Native")
+}
+
+System_Boundary(k8s, "Kubernetes Cluster"){
+	Container_Boundary(authResource, "Microserviço Autenticação"){
+		Container(authApi, "Rest API", "NodeJS")
+	}
+	Container_Boundary(protectedResource, "Microserviço Protegido"){
+		Container(protectedApi, "Rest API", "NodeJS")
+	}
+}
+
+System_Boundary(aws, "AWS Cloud"){
+	Container_Boundary(awsCognito, "Aws Cognito"){
+		Container(pfPool, "PF Poll", "User Pool")
+	}
+}
+
+Rel(user, appMobile, "1. Usuário acessando aplicação")
+Rel(appMobile, authApi, "2. Solicita Token de Acesso")
+Rel(authApi, pfPool, "3. Cria Token de Acesso")
+Rel(appMobile, protectedApi, "4. Acessa Microserviço com Token de Acesso")
+Rel(protectedApi, pfPool, "5. Valida Token de Acesso")
+
+SHOW_FLOATING_LEGEND()
+
+@enduml

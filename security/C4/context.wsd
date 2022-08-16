@@ -1,0 +1,31 @@
+@startuml C4_Context
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+Person(user, "Usuario", "Usuario da aplicação")
+System(webSpa, "Aplicação Interna")
+System_Ext(extApp, "Aplicação Parceira")
+System(msApi, "Microserviço Protegido")
+System(msAuthApi, "Microserviço Autenticação")
+System(mulesoft, "Mulesoft")
+System_Ext(aws, "Aws Cloud")
+
+Lay_D(msAuthApi, mulesoft)
+
+Rel(user, webSpa, "Utiliza", "SPA/Mobile")
+Rel(user, extApp, "Utiliza", "SPA/Mobile")
+
+Rel_R(webSpa, msAuthApi, "Solicita Token de Acesso", "JSON/HTTP")
+Rel(webSpa, msApi, "Realiza Requisição com Token de Acesso", "JSON/HTTP")
+
+Rel_L(extApp, msAuthApi, "Solicita Token de Acesso", "JSON/HTTP")
+Rel(extApp, mulesoft, "Realiza Requisição com Token de Acesso", "JSON/HTTP")
+
+Rel(mulesoft, msApi, "Realiza Requisição com Token de Acesso", "JSON/HTTP")
+
+Rel(msAuthApi, aws, "Cria Token de Acesso", "SDK")
+Rel_U(msApi, aws, "Valida Token de Acesso", "JWRS")
+Rel(mulesoft, aws, "Valida Token de Acesso", "JWRS")
+
+SHOW_FLOATING_LEGEND()
+
+@enduml

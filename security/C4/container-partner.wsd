@@ -1,0 +1,36 @@
+@startuml LAYOUT_TOP_DOWN C4_Context
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+Person(user, "Usuario", "Usuario da aplicação")
+
+System_Boundary(external, "External Network"){
+	Container_Ext(partner, "Aplicação Parceira")
+	Container(mulesoft, "Mulesoft", "MuleSoft")
+}
+
+System_Boundary(k8s, "Kubernetes Cluster"){
+	Container_Boundary(security, "Microserviço Autenticação"){
+		Container(msSecurity, "Web API", "NodeJS")
+	}
+	Container_Boundary(msQSaude1, "Microserviço Protegido"){
+		Container(msPod, "Web API", "NodeJS")
+	}
+}
+
+System_Boundary(aws, "AWS Cloud"){
+	Container_Boundary(awsCognito, "Aws Cognito"){
+		Container(apPool, "Application Poll", "User Pool")
+	}
+}
+
+Rel(user, partner, "1. Usuário acessando aplicação")
+Rel(partner, msSecurity, "2. Solicita Token de Acesso")
+Rel(msSecurity, apPool, "3. Gera Token de Acesso")
+Rel(partner, mulesoft, "4. Acessa Barramento Mulesoft")
+Rel(mulesoft, apPool, "5. Valida Token de Acesso")
+Rel(mulesoft, msPod, "6. Realiza Requisição")
+Rel(msPod, apPool, "7. Valida Token de Acesso")
+
+SHOW_FLOATING_LEGEND()
+
+@enduml

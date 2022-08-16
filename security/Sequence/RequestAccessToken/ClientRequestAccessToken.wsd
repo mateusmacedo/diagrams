@@ -1,0 +1,18 @@
+@startuml RequestAccessToken
+autonumber
+actor Client as client << Application >>
+participant AuthenticationAPI as api << Restfull Api >>
+    client -> api: DoRequest(payload)
+    activate api
+    api -> api: ValidateRequest(request)
+    break isInvalid
+        api --> client: ReturnWithErrors(BadRequest)
+    end
+    api -> api: ExtractCredentials(request.payload)
+    api -> api: ValidateCredentials(credentials)
+    break isInvalid
+        api --> client: ReturnWithErrors(Unauthorized)
+    end
+    api -> api: GenerateAccessToken(credentials)
+    return accessToken
+@enduml
