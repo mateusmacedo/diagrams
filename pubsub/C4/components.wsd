@@ -1,5 +1,5 @@
 @startuml C4_Components
-!include ./C4-PlantUML/C4_Component.puml
+!include ./plantuml-stdlib/C4/C4_Component.puml
 	Container_Boundary(fooApi, "API Foo"){
 		Component(service, "Service", "NestJS", "Handles business logic")
 	}

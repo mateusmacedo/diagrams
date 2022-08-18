@@ -1,5 +1,5 @@
 @startuml C4_Context
-!include ./C4-PlantUML/C4_Context.puml
+!include ./plantuml-stdlib/C4/C4_Context.puml
 
 title Diagrama de Contexto - Pub/Sub
 

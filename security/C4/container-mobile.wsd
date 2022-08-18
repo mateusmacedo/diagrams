@@ -1,5 +1,5 @@
 @startuml C4_Context
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+!include ./plantuml-stdlib/C4/C4_Container.puml
 
 Person(user, "Usuario", "Usuario do App Mobile")
 

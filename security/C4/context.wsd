@@ -1,5 +1,5 @@
 @startuml C4_Context
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+!include ./plantuml-stdlib/C4/C4_Context.puml
 
 Person(user, "Usuario", "Usuario da aplicação")
 System(webSpa, "Aplicação Interna")

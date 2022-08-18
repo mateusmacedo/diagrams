@@ -1,5 +1,5 @@
 @startuml C4_Container
-!include ./C4-PlantUML/C4_Container.puml
+!include ./plantuml-stdlib/C4/C4_Container.puml
 
 title Diagrama de Containers - Pub/Sub
 
