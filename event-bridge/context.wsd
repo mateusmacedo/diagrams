@@ -1,20 +1,15 @@
 @startuml C4_Context
-!include ./C4-PlantUML/C4_Context.puml
+!include ./plantuml-stdlib/C4/C4_Context.puml
 
-title Diagrama de Contexto - Event Bridge
+title Context Diagram - Student Answer activity
 
-Person(user, "Usuário")
-System(foo, "Aplicação Foo")
-System(bar, "Aplicação Bar")
-System_Ext(aws, "Aws Cloud")
+Person_Ext(student, "Learning Student", "User")
+Person(manager, "Learning Manager", "User")
+System(learning, "Learning System", "System")
+System_Ext(aws, "Aws Cloud", "System")
 
-Rel(user, foo, "Utiliza aplicação")
-Rel(foo, user, "Envia retorno")
-Rel(foo, aws, "Emite eventos AWS")
-Rel(foo, aws, "Consome Eventos AWS")
-Rel(bar, aws, "Emite eventos AWS")
-Rel(bar, aws, "Consome Eventos AWS")
-
-SHOW_LEGEND()
+Rel_R(student, learning, "Start, answer or finish activity")
+Rel_L(manager, learning, "Create activity")
+Rel(learning, aws, "Use AKS, RDS, Event Bridge, Lambda, S3")
 
 @enduml

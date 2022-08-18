@@ -1,0 +1,45 @@
+@startuml C4_Container
+!include ./plantuml-stdlib/C4/C4_Container.puml
+
+LAYOUT_LANDSCAPE()
+
+title Diagrama de Containers - Aluno Respondendo Atividade
+
+Person_Ext(student, "Learning student", "User")
+Person(manager, "Learning Manager", "User")
+
+System_Boundary(extNet, "External Network"){
+	Container(app, "Learning Mobile App", "ReactNative")
+}
+
+System_Boundary(learning, "Plataforma Learning"){
+	System_Boundary(aws1, "AWS Cloud Front"){
+		Container(spa, "Learning Web SPA", "ReactJS")
+	}
+	System_Boundary(k8s, "Kubernetes"){
+		Container(planningApi, "Planning API", "NodeJS")
+		Container(studentsApi, "students API", "NodeJS")
+	}
+	System_Boundary(aws2, "AWS serverless platform"){
+		Container(rds, "Learning Database", "RDS")
+		Container(bus, "Learning activity event bus", "Event Bridge")
+		Container(s3, "Learning students activities interaction bucket", "S3")
+		Container(athena, "Athena students activities queries", "Athena")
+		Container(lambda, "Learning activities lambda application", "Lambda NodeJS")
+		Rel_R(bus, lambda, "Update students activities relationship", "Event Rule - Activity Created")
+		Rel(bus, s3, "Store students activities interaction events", "Event Rule - Activity Started or Finished")
+		Rel(athena, s3, "Query students activities", "SQL")
+	}
+	Rel(planningApi, rds, "Reads from and writes data to", "SQL")
+	Rel(studentsApi, rds, "Reads from and writes data to", "SQL")
+	Rel(planningApi, bus, "Emit activity created  event", "Sdk")
+	Rel(studentsApi, bus, "Emit activity started, answered or finished event", "Sdk")
+}
+Rel(student, app, "Start, answer or finish activity", "Native App")
+Rel(student, spa, "Start, answer or finish activity", "HTTPS")
+Rel(manager, spa, "Create activity", "HTTPS")
+Rel(app, studentsApi, "Make start, answer or finish activity api call", "HTTPS/REST/JSON")
+Rel(spa, studentsApi, "Make start, answer or finish activity api call", "HTTPS/REST/JSON")
+Rel(spa, planningApi, "Make create activity api call", "HTTPS/REST/JSON")
+
+@enduml
